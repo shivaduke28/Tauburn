@@ -1,9 +1,11 @@
 {
-    "name": "VRChatPackageTemplate.Editor",
-    "references": [],
-    "includePlatforms": [
-        "Editor"
+    "name": "net.shivaduke.tauburn",
+    "references": [
+        "UdonSharp.Runtime",
+        "UdonSharp.Lib",
+        "VRC.Udon"
     ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
