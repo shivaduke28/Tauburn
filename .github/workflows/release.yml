@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches: main
-    paths: Packages/net.shivaduke.tauburn/**
+    paths: Packages/net.shivaduke28.tauburn/**
 
 env:
-  packageName: "net.shivaduke.tauburn"
+  packageName: "net.shivaduke28.tauburn"
 
 jobs:
   build:
