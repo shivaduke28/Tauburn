@@ -1,13 +1,20 @@
 {
-  "name": "net.shivaduke28.tauburn",
-  "displayName": "Tauburn",
-  "version": "0.0.1",
-  "unity": "2019.4",
-  "description": "VRC MIDI DRIVER",
-  "vrchatVersion": "2022.1.1",
-  "author": {
-    "name": "shivaduke28",
-    "email": "shivaduke28@gmail.com",
-    "url": "https://github.com/shivaduke28"
-  }
+    "name": "net.shivaduke28.tauburn",
+    "displayName": "Tauburn",
+    "version": "0.0.1",
+    "unity": "2019.4",
+    "description": "VRC MIDI DRIVER",
+    "vrchatVersion": "2022.1.1",
+    "author": {
+        "name": "shivaduke28",
+        "email": "shivaduke28@gmail.com",
+        "url": "https://github.com/shivaduke28"
+    },
+    "samples": [
+        {
+            "displayName": "Sample Scene",
+            "description": "Contains a sample scene of Tauburn.",
+            "path": "Samples~/Sample"
+        }
+    ]
 }
