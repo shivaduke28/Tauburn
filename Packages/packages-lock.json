@@ -186,7 +186,7 @@
         "com.unity.textmeshpro": "2.1.6"
       }
     },
-    "net.shivaduke.tauburn": {
+    "net.shivaduke28.tauburn": {
       "version": "file:net.shivaduke.tauburn",
       "depth": 0,
       "source": "embedded",

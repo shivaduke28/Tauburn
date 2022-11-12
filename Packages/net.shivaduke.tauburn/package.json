@@ -1,9 +1,9 @@
 {
-  "name": "net.shivaduke.tauburn",
+  "name": "net.shivaduke28.tauburn",
   "displayName": "Tauburn",
-  "version": "0.0.4",
+  "version": "0.0.1",
   "unity": "2019.4",
-  "description": "VRC MIDI STAR DRIVER",
+  "description": "VRC MIDI DRIVER",
   "vrchatVersion": "2022.1.1",
   "author": {
     "name": "shivaduke28",
