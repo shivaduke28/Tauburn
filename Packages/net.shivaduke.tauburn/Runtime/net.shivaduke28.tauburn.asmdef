@@ -1,9 +1,10 @@
 {
-    "name": "net.shivaduke.tauburn",
+    "name": "net.shivaduke28.tauburn",
     "references": [
         "UdonSharp.Runtime",
         "UdonSharp.Lib",
-        "VRC.Udon"
+        "VRC.Udon",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
