@@ -814,7 +814,7 @@ PrefabInstance:
     - target: {fileID: 383030365447791514, guid: d9a55b9a2e254564c9188dc03c4824ce,
         type: 3}
       propertyPath: _syncMethod
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 383030365447791515, guid: d9a55b9a2e254564c9188dc03c4824ce,
         type: 3}
@@ -1189,7 +1189,7 @@ PrefabInstance:
     - target: {fileID: 383030367352099283, guid: d9a55b9a2e254564c9188dc03c4824ce,
         type: 3}
       propertyPath: _syncMethod
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 383030367352099287, guid: d9a55b9a2e254564c9188dc03c4824ce,
         type: 3}
