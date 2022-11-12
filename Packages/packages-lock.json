@@ -187,7 +187,7 @@
       }
     },
     "net.shivaduke28.tauburn": {
-      "version": "file:net.shivaduke.tauburn",
+      "version": "file:net.shivaduke28.tauburn",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
