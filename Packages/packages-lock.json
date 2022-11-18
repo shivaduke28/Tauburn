@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.llealloo.audiolink": {
+      "version": "https://github.com/llealloo/vrc-udon-audio-link.git?path=Packages/com.llealloo.audiolink#d9de6e29181bd941efae31cdadda00582b26eaae",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d9de6e29181bd941efae31cdadda00582b26eaae"
+    },
     "com.unity.burst": {
       "version": "1.4.11",
       "depth": 1,
