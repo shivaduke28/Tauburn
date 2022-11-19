@@ -2,28 +2,20 @@
 using TMPro;
 using UdonSharp;
 using UnityEngine;
-using UnityEngine.UI;
 using VRC.SDK3.Midi;
 
-namespace Tauburn.Input
+namespace Tauburn.Midi
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), RequireComponent(typeof(VRCMidiListener))]
-    public sealed class MidiIntInput : IntParameterInput
+    public sealed class MidiIntInput : IntParameterProvider
     {
         [SerializeField] int parameterValue;
-        [SerializeField] Toggle assignToggle;
+        [SerializeField] GameObject assignRoot;
         [SerializeField] TextMeshProUGUI midiText;
-        [SerializeField] Animator animator;
 
-        readonly int isOnId = Animator.StringToHash("isOn");
-
+        IntParameterHandler parameterHandler;
         bool isAssigning;
         int midiNumber = -1;
-
-        public override void Set(int value)
-        {
-            animator.SetBool(isOnId, parameterValue == value);
-        }
 
         // VRCMidiListener
         public override void MidiNoteOn(int channel, int number, int velocity)
@@ -45,37 +37,47 @@ namespace Tauburn.Input
             OnMidiInput(number);
         }
 
+        // IntParameterProvider
+        public override void Register(IntParameterHandler parameterHandler)
+        {
+            this.parameterHandler = parameterHandler;
+        }
+
+        public void SetAssignActive(bool active)
+        {
+            assignRoot.SetActive(active);
+            if (!active)
+            {
+                isAssigning = false;
+            }
+        }
+
         void OnMidiInput(int number)
         {
             if (isAssigning)
             {
                 midiNumber = number;
                 midiText.text = number.ToString();
-                assignToggle.isOn = false;
+                isAssigning = false;
             }
             else if (number == midiNumber)
             {
-                SetValue();
+                parameterHandler.Set(parameterValue);
             }
         }
 
-        // called from Button
-        public void SetValue()
+        // called from AssignButton
+        public void OnAssignButtonClick()
         {
-            parameterSync.Set(parameterValue);
-        }
-
-        // called from Toggle
-        public void OnToggleAssign()
-        {
-            isAssigning = assignToggle.isOn;
+            Debug.Log("assign button click");
+            isAssigning = true;
         }
 
         public void ResetAssignment()
         {
             midiText.text = "none";
             midiNumber = -1;
-            assignToggle.isOn = false;
+            isAssigning = false;
         }
     }
 }

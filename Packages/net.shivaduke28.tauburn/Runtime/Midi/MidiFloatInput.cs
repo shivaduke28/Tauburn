@@ -2,36 +2,22 @@
 using TMPro;
 using UdonSharp;
 using UnityEngine;
-using UnityEngine.UI;
 using VRC.SDK3.Midi;
 
-namespace Tauburn.Input
+namespace Tauburn.Midi
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), RequireComponent(typeof(VRCMidiListener))]
-    public sealed class MidiFloatInput : FloatParameterInput
+    public sealed class MidiFloatInput : FloatParameterProvider
     {
-        [SerializeField] Toggle assignToggle;
+        [SerializeField] GameObject assignRoot;
         [SerializeField] TextMeshProUGUI midiText;
-        [SerializeField] TextMeshProUGUI valueText;
-        [SerializeField] Animator animator;
-        [SerializeField] Slider slider;
 
-        readonly int valueId = Animator.StringToHash("value");
         const float OneOver127 = 1f / 127f;
 
+        FloatParameterHandler parameterHandler;
         bool isAssigning;
-        bool isEditingSlider;
         int midiNumber = -1;
 
-        // FloatParameterInput
-        public override void Set(float value)
-        {
-            valueText.text = value.ToString("N");
-            animator.SetFloat(valueId, value);
-            isEditingSlider = true;
-            slider.value = value;
-            isEditingSlider = false;
-        }
 
         // VRCMidiListener
         public override void MidiNoteOn(int channel, int number, int velocity)
@@ -51,38 +37,46 @@ namespace Tauburn.Input
             OnMidiInput(number, value * OneOver127);
         }
 
+        public override void Register(FloatParameterHandler parameterHandler)
+        {
+            this.parameterHandler = parameterHandler;
+        }
+
+        public void SetAssignActive(bool active)
+        {
+            assignRoot.SetActive(active);
+            if (!active)
+            {
+                isAssigning = false;
+            }
+        }
+
         void OnMidiInput(int number, float value)
         {
             if (isAssigning)
             {
                 midiNumber = number;
                 midiText.text = number.ToString();
-                assignToggle.isOn = false;
+                isAssigning = false;
             }
             else if (number == midiNumber)
             {
-                parameterSync.Set(value);
+                parameterHandler.Set(value);
             }
         }
 
-        // called from Toggle
-        public void OnToggleAssign()
+        // called from AssignButton
+        public void OnAssignButtonClick()
         {
-            isAssigning = assignToggle.isOn;
+            isAssigning = true;
         }
 
-        // called from Slider
-        public void OnSliderValueChange()
-        {
-            if (isEditingSlider) return;
-            parameterSync.Set(slider.value);
-        }
 
         public void ResetAssignment()
         {
             midiText.text = "none";
             midiNumber = -1;
-            assignToggle.isOn = false;
+            isAssigning = false;
         }
     }
 }
