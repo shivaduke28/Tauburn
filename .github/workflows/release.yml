@@ -8,6 +8,7 @@ on:
 
 env:
   packageName: "net.shivaduke28.tauburn"
+  packageNameSub0: "net.shivaduke28.tauburn.audio-link"
 
 jobs:
   build:
@@ -23,13 +24,21 @@ jobs:
         with: 
             path: "Packages/${{env.packageName}}/package.json"
             prop_path: "version"
-            
-      - run: echo ${{steps.version.outputs.prop}} 
+      - name: get sub package version
+        id: version-sub0
+        uses: notiz-dev/github-action-json-property@7c8cf5cc36eb85d8d287a8086a39dac59628eb31
+        with: 
+            path: "Packages/${{env.packageNameSub0}}/package.json"
+            prop_path: "version"
+
+      - run: echo ${{steps.version-sub0.outputs.prop}} 
     
       - name: Set Environment Variables
         run: |
           echo "zipFile=${{ env.packageName }}-${{ steps.version.outputs.prop }}".zip >> $GITHUB_ENV
           echo "unityPackage=${{ env.packageName }}-${{ steps.version.outputs.prop }}.unitypackage" >> $GITHUB_ENV
+          echo "zipFileSub0=${{ env.packageNameSub0 }}-${{ steps.version-sub0.outputs.prop }}".zip >> $GITHUB_ENV
+          echo "unityPackageSub0=${{ env.packageNameSub0 }}-${{ steps.version-sub0.outputs.prop }}.unitypackage" >> $GITHUB_ENV
         
       - name: Create Zip
         uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
@@ -45,8 +54,21 @@ jobs:
         with:
           package-path: ${{ env.unityPackage }}
           include-files: metaList
-        
-        
+
+      - name: Create Zip for Sub0
+        uses: thedoctor0/zip-release@09336613be18a8208dfa66bd57efafd9e2685657
+        with:
+          type: "zip"
+          directory: "Packages/${{env.packageNameSub0}}/"
+          filename: "../../${{env.zipFileSub0}}" # make the zip file two directories up, since we start two directories in above
+          
+      - run: find "Packages/${{env.packageNameSub0}}/" -name \*.meta >> metaList
+          
+      - name: Create UnityPackage
+        uses: pCYSl5EDgo/create-unitypackage@v1.1.1
+        with:
+          package-path: ${{ env.unityPackageSub0 }}
+          include-files: metaList
       - name: Make Release
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
         with:
@@ -54,4 +76,6 @@ jobs:
           files: |
             ${{ env.zipFile }}
             ${{ env.unityPackage }}
+            ${{ env.zipFileSub0 }}
+            ${{ env.unityPackageSub0 }}
             Packages/${{ env.packageName }}/package.json
