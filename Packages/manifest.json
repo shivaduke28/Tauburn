@@ -39,6 +39,7 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.llealloo.audiolink": "https://github.com/llealloo/vrc-udon-audio-link.git?path=Packages/com.llealloo.audiolink#d9de6e29181bd941efae31cdadda00582b26eaae"
   }
 }

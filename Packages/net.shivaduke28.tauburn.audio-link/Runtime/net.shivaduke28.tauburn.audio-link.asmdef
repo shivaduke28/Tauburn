@@ -1,0 +1,21 @@
+{
+    "name": "net.shivaduke28.tauburn.audio-link",
+    "references": [
+        "VRC.Udon",
+        "UdonSharp.Runtime",
+        "net.shivaduke28.tauburn",
+        "AudioLink"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UDONSHARP",
+        "AUDIOLINK"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

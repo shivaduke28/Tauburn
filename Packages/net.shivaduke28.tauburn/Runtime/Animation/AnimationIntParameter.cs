@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Tauburn.Animation
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn AnimationIntParameter")]
     public sealed class AnimationIntParameter : IntParameterHandler
     {
         [SerializeField] string parameterName;

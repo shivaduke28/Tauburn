@@ -1,0 +1,20 @@
+{
+    "name": "net.shivaduke28.tauburn.audio-link.editor",
+    "references": [
+        "UdonSharp.Runtime",
+        "UdonSharp.Editor",
+        "net.shivaduke28.tauburn",
+        "net.shivaduke28.tauburn.audio-link"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

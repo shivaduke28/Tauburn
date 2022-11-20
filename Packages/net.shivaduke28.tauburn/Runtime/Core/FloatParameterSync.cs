@@ -4,11 +4,12 @@ using VRC.SDKBase;
 
 namespace Tauburn.Core
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public sealed class FloatParameterSync : UdonSharpBehaviour
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), AddComponentMenu("Tauburn FloatParameterSync"), DefaultExecutionOrder(-1)]
+    public sealed class FloatParameterSync : FloatParameterHandler
     {
         [SerializeField] FloatParameterHandler parameterHandler;
-        [SerializeField] FloatParameterInput[] inputs;
+        [SerializeField] FloatParameterProvider[] parameterProviders;
+        [SerializeField] FloatParameterView[] parameterViews;
 
         [UdonSynced, FieldChangeCallback(nameof(SyncedValue))]
         float syncedValue;
@@ -20,22 +21,22 @@ namespace Tauburn.Core
             {
                 syncedValue = value;
                 parameterHandler.Set(value);
-                foreach (var input in inputs)
+                foreach (var view in parameterViews)
                 {
-                    input.Set(value);
+                    view.UpdateView(value);
                 }
             }
         }
 
         void Start()
         {
-            foreach (var input in inputs)
+            foreach (var provider in parameterProviders)
             {
-                input.Initialize(this);
+                provider.Register(this);
             }
         }
 
-        public void Set(float value)
+        public override void Set(float value)
         {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
             SyncedValue = value;

@@ -4,11 +4,12 @@ using VRC.SDKBase;
 
 namespace Tauburn.Core
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public sealed class IntParameterSync : UdonSharpBehaviour
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), AddComponentMenu("Tauburn IntParameterSync"), DefaultExecutionOrder(-1)]
+    public sealed class IntParameterSync : IntParameterHandler
     {
         [SerializeField] IntParameterHandler parameterHandler;
-        [SerializeField] IntParameterInput[] inputs;
+        [SerializeField] IntParameterProvider[] parameterProviders;
+        [SerializeField] IntParameterView[] parameterViews;
 
         [UdonSynced, FieldChangeCallback(nameof(SyncedValue))]
         int syncedValue;
@@ -20,22 +21,22 @@ namespace Tauburn.Core
             {
                 syncedValue = value;
                 parameterHandler.Set(value);
-                foreach (var input in inputs)
+                foreach (var view in parameterViews)
                 {
-                    input.Set(value);
+                    view.UpdateView(value);
                 }
             }
         }
 
         void Start()
         {
-            foreach (var input in inputs)
+            foreach (var provider in parameterProviders)
             {
-                input.Initialize(this);
+                provider.Register(this);
             }
         }
 
-        public void Set(int value)
+        public override void Set(int value)
         {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
             SyncedValue = value;

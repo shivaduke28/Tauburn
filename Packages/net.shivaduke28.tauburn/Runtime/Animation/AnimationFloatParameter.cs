@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Tauburn.Animation
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn AnimationFloatParameter")]
     public sealed class AnimationFloatParameter : FloatParameterHandler
     {
         [SerializeField] string parameterName;
