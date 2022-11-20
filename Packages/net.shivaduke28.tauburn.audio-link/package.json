@@ -1,6 +1,6 @@
 {
     "name": "net.shivaduke28.tauburn.audio-link",
-    "displayName": "TauburnAudioLink",
+    "displayName": "Tauburn AudioLink",
     "version": "0.0.2",
     "unity": "2019.4",
     "description": "VRC MIDI STAR DRIVER (AudioLink support)",
@@ -13,7 +13,7 @@
     "vpmDependencies": {
         "com.vrchat.udonsharp": "1.x",
         "net.shivaduke28.tauburn": "0.0.2",
-        "com.llealloo.audiolink": "0.0.3"
+        "com.llealloo.audiolink": "0.3.X"
     },
     "samples": [
         {
