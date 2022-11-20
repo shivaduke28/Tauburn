@@ -6,7 +6,7 @@ using VRCAudioLink;
 
 namespace Tauburn.AudioLink
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn AudioLinkFloatParameter")]
     public sealed class AudioLinkFloatParameter : FloatParameterHandler
     {
         [SerializeField] AudioLinkParameterType type;
@@ -68,7 +68,8 @@ namespace Tauburn.AudioLink
             slider.normalizedValue = value;
         }
     }
-    enum AudioLinkParameterType
+
+    public enum AudioLinkParameterType
     {
         Gain,
         Treble,

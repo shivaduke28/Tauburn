@@ -6,7 +6,7 @@ using VRC.SDK3.Midi;
 
 namespace Tauburn.Midi
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), RequireComponent(typeof(VRCMidiListener))]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), RequireComponent(typeof(VRCMidiListener)), AddComponentMenu("Tauburn MidiFloatInput")]
     public sealed class MidiFloatInput : FloatParameterProvider
     {
         [SerializeField] GameObject assignRoot;

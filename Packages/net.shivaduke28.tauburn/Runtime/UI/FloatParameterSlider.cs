@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Tauburn.UI
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn FloatParameterSlider")]
     public sealed class FloatParameterSlider : FloatParameterView
     {
         [SerializeField] Slider slider;

@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Tauburn.Animation
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
-    public sealed class AnimationParameterController : UdonSharpBehaviour
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn AnimatorBridge")]
+    public sealed class AnimatorBridge : UdonSharpBehaviour
     {
         [SerializeField] Animator animator;
         [SerializeField] AnimationIntParameter[] intParameters;

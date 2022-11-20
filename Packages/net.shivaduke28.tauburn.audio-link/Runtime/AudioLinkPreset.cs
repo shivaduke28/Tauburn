@@ -5,7 +5,7 @@ using VRCAudioLink;
 
 namespace Tauburn.AudioLink
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), AddComponentMenu("Tauburn AudioLinkPreset")]
     public sealed class AudioLinkPreset : UdonSharpBehaviour
     {
         [SerializeField, Range(0, 2)] float gain = 1f;

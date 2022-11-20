@@ -4,7 +4,7 @@ using VRC.SDKBase;
 
 namespace Tauburn.Core
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), DefaultExecutionOrder(-1)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), AddComponentMenu("Tauburn FloatParameterSync"), DefaultExecutionOrder(-1)]
     public sealed class FloatParameterSync : FloatParameterHandler
     {
         [SerializeField] FloatParameterHandler parameterHandler;

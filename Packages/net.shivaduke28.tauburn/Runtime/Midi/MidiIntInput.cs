@@ -6,7 +6,7 @@ using VRC.SDK3.Midi;
 
 namespace Tauburn.Midi
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), RequireComponent(typeof(VRCMidiListener))]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), RequireComponent(typeof(VRCMidiListener)), AddComponentMenu("Tauburn MidiIntInput")]
     public sealed class MidiIntInput : IntParameterProvider
     {
         [SerializeField] int parameterValue;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Tauburn.UI
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn IntParameterButton")]
     public sealed class IntParameterButton : IntParameterView
     {
         [SerializeField] int parameterValue;

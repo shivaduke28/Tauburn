@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Tauburn.Midi
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn MidiAssignController")]
     public sealed class MidiAssignController : UdonSharpBehaviour
     {
         [SerializeField] MidiIntInput[] midiIntInputs;
