@@ -10,11 +10,13 @@ namespace Tauburn.Midi
     public sealed class MidiIntInput : IntParameterProvider
     {
         [SerializeField] int parameterValue;
-        [SerializeField] GameObject assignRoot;
         [SerializeField] TextMeshProUGUI midiText;
+        [SerializeField] Animator animator;
+        readonly int stateId = Animator.StringToHash("state");
+        MidiAssignState state = MidiAssignState.None;
 
         IntParameterHandler parameterHandler;
-        bool isAssigning;
+
         public int MidiNumber { get; private set; } = -1;
 
         // VRCMidiListener
@@ -43,22 +45,35 @@ namespace Tauburn.Midi
             this.parameterHandler = parameterHandler;
         }
 
+        void SetState(MidiAssignState assignState)
+        {
+            state = assignState;
+            switch (state)
+            {
+                case MidiAssignState.None:
+                    animator.SetInteger(stateId, 0);
+                    break;
+                case MidiAssignState.Active:
+                    animator.SetInteger(stateId, 1);
+                    break;
+                case MidiAssignState.Assigning:
+                    animator.SetInteger(stateId, 2);
+                    break;
+            }
+        }
+
         public void SetAssignActive(bool active)
         {
-            assignRoot.SetActive(active);
-            if (!active)
-            {
-                isAssigning = false;
-            }
+            SetState(active ? MidiAssignState.Active : MidiAssignState.None);
         }
 
         void OnMidiInput(int number)
         {
-            if (isAssigning)
+            if (state == MidiAssignState.Assigning)
             {
                 MidiNumber = number;
                 midiText.text = number.ToString();
-                isAssigning = false;
+                SetState(MidiAssignState.Active);
             }
             else if (number == MidiNumber)
             {
@@ -69,21 +84,22 @@ namespace Tauburn.Midi
         // called from AssignButton
         public void OnAssignButtonClick()
         {
-            isAssigning = true;
+            Debug.Log(state);
+            SetState(state == MidiAssignState.Active ? MidiAssignState.Assigning : MidiAssignState.Active);
         }
 
         public void ForceAssign(int number)
         {
             MidiNumber = number;
             midiText.text = number == -1 ? "none" : number.ToString();
-            isAssigning = false;
+            SetState(MidiAssignState.Active);
         }
 
         public void ResetAssignment()
         {
             midiText.text = "none";
             MidiNumber = -1;
-            isAssigning = false;
+            SetState(MidiAssignState.Active);
         }
     }
 }
