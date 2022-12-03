@@ -47,7 +47,7 @@ namespace Tauburn.Editor.Animation
             return animatorBridge;
         }
 
-        public AnimationFloatParameter AddFloatParameterHandler(string parameterName, int index, UIBuilder.BuildContext buildContext)
+        public AnimationFloatParameter AddFloatParameterHandler(string parameterName, int index, UIBuilder.BuildContentContext buildContentContext)
         {
             var go = new GameObject(parameterName);
             go.transform.SetParent(gameObject.transform, false);
@@ -57,11 +57,11 @@ namespace Tauburn.Editor.Animation
             serialized.ApplyModifiedProperties();
 
             serializedProperties.FloatParameters.GetArrayElementAtIndex(index).objectReferenceValue = handler;
-            buildContext.FloatParameterHandlers.Add(handler);
+            buildContentContext.FloatParameterHandlers.Add(handler);
             return handler;
         }
 
-        public AnimationIntParameter AddIntParameterHandler(string parameterName, int index, UIBuilder.BuildContext buildContext)
+        public AnimationIntParameter AddIntParameterHandler(string parameterName, int index, UIBuilder.BuildContentContext buildContentContext)
         {
             var go = new GameObject(parameterName);
             go.transform.SetParent(gameObject.transform, false);
@@ -71,7 +71,7 @@ namespace Tauburn.Editor.Animation
             serialized.ApplyModifiedProperties();
 
             serializedProperties.INTParameters.GetArrayElementAtIndex(index).objectReferenceValue = handler;
-            buildContext.IntParameterHandlers.Add(handler);
+            buildContentContext.IntParameterHandlers.Add(handler);
             return handler;
         }
 

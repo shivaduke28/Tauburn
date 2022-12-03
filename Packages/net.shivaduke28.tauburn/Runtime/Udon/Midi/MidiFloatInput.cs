@@ -9,14 +9,15 @@ namespace Tauburn.Midi
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), RequireComponent(typeof(VRCMidiListener)), AddComponentMenu("Tauburn MidiFloatInput")]
     public sealed class MidiFloatInput : FloatParameterProvider
     {
-        [SerializeField] GameObject assignRoot;
         [SerializeField] TextMeshProUGUI midiText;
+        [SerializeField] Animator animator;
+        readonly int stateId = Animator.StringToHash("state");
+        MidiAssignState state = MidiAssignState.None;
 
         const float OneOver127 = 1f / 127f;
 
         FloatParameterHandler parameterHandler;
-        bool isAssigning;
-        int midiNumber = -1;
+        public int MidiNumber { get; private set; } = -1;
 
 
         // VRCMidiListener
@@ -42,24 +43,37 @@ namespace Tauburn.Midi
             this.parameterHandler = parameterHandler;
         }
 
+        void SetState(MidiAssignState assignState)
+        {
+            state = assignState;
+            switch (state)
+            {
+                case MidiAssignState.None:
+                    animator.SetInteger(stateId, 0);
+                    break;
+                case MidiAssignState.Active:
+                    animator.SetInteger(stateId, 1);
+                    break;
+                case MidiAssignState.Assigning:
+                    animator.SetInteger(stateId, 2);
+                    break;
+            }
+        }
+
         public void SetAssignActive(bool active)
         {
-            assignRoot.SetActive(active);
-            if (!active)
-            {
-                isAssigning = false;
-            }
+            SetState(active ? MidiAssignState.Active : MidiAssignState.None);
         }
 
         void OnMidiInput(int number, float value)
         {
-            if (isAssigning)
+            if (state == MidiAssignState.Assigning)
             {
-                midiNumber = number;
+                MidiNumber = number;
                 midiText.text = number.ToString();
-                isAssigning = false;
+                SetState(MidiAssignState.Active);
             }
-            else if (number == midiNumber)
+            else if (number == MidiNumber)
             {
                 parameterHandler.Set(value);
             }
@@ -68,15 +82,21 @@ namespace Tauburn.Midi
         // called from AssignButton
         public void OnAssignButtonClick()
         {
-            isAssigning = true;
+            SetState(state == MidiAssignState.Active ? MidiAssignState.Assigning : MidiAssignState.Active);
         }
 
+        public void ForceAssign(int number)
+        {
+            MidiNumber = number;
+            midiText.text = number == -1 ? "none" : number.ToString();
+            SetState(MidiAssignState.Active);
+        }
 
         public void ResetAssignment()
         {
             midiText.text = "none";
-            midiNumber = -1;
-            isAssigning = false;
+            MidiNumber = -1;
+            SetState(MidiAssignState.Active);
         }
     }
 }
