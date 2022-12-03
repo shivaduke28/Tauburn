@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Tauburn.Core;
 using Tauburn.Editor.Animation;
 using Tauburn.Midi;
@@ -13,53 +15,33 @@ namespace Tauburn.RuntimeEditor.Animation
 {
     public static class UIBuilder
     {
-        public sealed class BuildContext
+        public sealed class BuildLayoutContext
         {
-            public readonly List<FloatParameterHandler> FloatParameterHandlers = new List<FloatParameterHandler>();
-            public readonly List<IntParameterHandler> IntParameterHandlers = new List<IntParameterHandler>();
             public readonly List<MidiFloatInput> MidiFloatInputs = new List<MidiFloatInput>();
             public readonly List<MidiIntInput> MidiIntInputs = new List<MidiIntInput>();
         }
 
-        public static void BuildAnimationUI(Animator animator, UIMarker prefab, BuildData buildData, Transform parent = null)
+        public sealed class BuildContentContext
         {
-            var context = new BuildContext();
+            public readonly List<FloatParameterHandler> FloatParameterHandlers = new List<FloatParameterHandler>();
+            public readonly List<IntParameterHandler> IntParameterHandlers = new List<IntParameterHandler>();
+        }
+
+        public static void BuildAnimationUI(LayoutUIMarker layoutUIMarkerPrefab, AnimationBuildData[] animationBuildDatum,
+            Transform parent = null)
+        {
+            var context = new BuildLayoutContext();
 
             var canvas = CreateCanvas(parent);
-            var uiMarker = GameObject.Instantiate(prefab, canvas.transform, false);
-            uiMarker.gameObject.name = $"{prefab.name}_{buildData.displayName}";
-            uiMarker.nameText.text = buildData.displayName;
+            var layout = GameObject.Instantiate(layoutUIMarkerPrefab, canvas.transform, false);
 
-            var animatorBridgeBuilder = new AnimatorBridgeBuilder(animator, buildData);
-            var animatorBridge = animatorBridgeBuilder.CreateAnimatorBridge();
-
-            // Float
-            var inputFloatParameters = buildData.floatParameters;
-
-            foreach (var (input, i) in inputFloatParameters.Select((x, i) => (x, i)))
+            foreach (var animationBuildData in animationBuildDatum)
             {
-                animatorBridgeBuilder.AddFloatParameterHandler(input.name, i, context);
-                CreateFloatParameterUI(uiMarker.floatParameterUIMarkerPrefab,
-                    uiMarker.parametersRoot,
-                    input,
-                    i,
-                    context);
-            }
-
-            // Int
-            var inputIntParameters = buildData.intParameters;
-
-            foreach (var (input, i) in inputIntParameters.Select((x, i) => (x, i)))
-            {
-                animatorBridgeBuilder.AddIntParameterHandler(input.name, i, context);
-                CreateIntParameterUI(uiMarker.intParameterUIMarkerPrefab,
-                    uiMarker.parametersRoot,
-                    input,
-                    i, context);
+                BuildAnimationContent(layout, animationBuildData, context);
             }
 
             // MIDI Assign
-            var midiAssign = uiMarker.midiAssignController;
+            var midiAssign = layout.midiAssignController;
             var serializedMidiAssign = new SerializedObject(midiAssign);
             var serializedMidiAssignFloat = serializedMidiAssign.FindProperty("midiFloatInputs");
             var serializedMidiAssignInt = serializedMidiAssign.FindProperty("midiIntInputs");
@@ -76,34 +58,94 @@ namespace Tauburn.RuntimeEditor.Animation
                 serializedMidiAssignInt.GetArrayElementAtIndex(i).objectReferenceValue = input;
             }
 
-            animatorBridgeBuilder.Apply();
             serializedMidiAssign.ApplyModifiedProperties();
-            animatorBridge.transform.SetParent(uiMarker.transform, false);
 
+            var canvasRect = canvas.GetComponent<RectTransform>();
+            var layoutRect = layout.GetComponent<RectTransform>();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(layoutRect);
+            canvasRect.sizeDelta = layoutRect.sizeDelta + new Vector2(50f, 20f);
+            layoutRect.localPosition = -new Vector2(20f, 0f);
             Selection.activeGameObject = canvas.gameObject;
         }
 
-        static FloatParameterUIMarker CreateFloatParameterUI(FloatParameterUIMarker prefab, Transform parent,
-            BuildData.FloatParameter inputFloatParameter, int index, BuildContext context)
+        static async Task ApplyCanvasRect(RectTransform canvasRect, RectTransform layoutRect)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(0.1f));
+        }
+
+        static void BuildAnimationContent(LayoutUIMarker layoutUIMarker, AnimationBuildData animationBuildData, BuildLayoutContext layoutContext)
+        {
+            var contentContext = new BuildContentContext();
+            var uiMarker = GameObject.Instantiate(layoutUIMarker.contentUIMarkerPrefab, layoutUIMarker.contentsRoot, false);
+            var animator = animationBuildData.Animator;
+            var buildData = animationBuildData.BuildData;
+            uiMarker.gameObject.name = buildData.displayName;
+            uiMarker.nameText.text = buildData.displayName;
+
+            var animatorBridgeBuilder = new AnimatorBridgeBuilder(animator, buildData);
+            var animatorBridge = animatorBridgeBuilder.CreateAnimatorBridge();
+
+            // Float
+            var inputFloatParameters = buildData.floatParameters;
+
+            foreach (var (input, i) in inputFloatParameters.Select((x, i) => (x, i)))
+            {
+                animatorBridgeBuilder.AddFloatParameterHandler(input.name, i, contentContext);
+                CreateFloatParameterUI(uiMarker.floatParameterUIMarkerPrefab,
+                    uiMarker.parametersRoot,
+                    input,
+                    i,
+                    contentContext,
+                    layoutContext);
+            }
+
+            // Int
+            var inputIntParameters = buildData.intParameters;
+
+            foreach (var (input, i) in inputIntParameters.Select((x, i) => (x, i)))
+            {
+                animatorBridgeBuilder.AddIntParameterHandler(input.name, i, contentContext);
+                CreateIntParameterUI(uiMarker.intParameterUIMarkerPrefab,
+                    uiMarker.parametersRoot,
+                    input,
+                    i, contentContext,
+                    layoutContext);
+            }
+
+            animatorBridgeBuilder.Apply();
+            animatorBridge.transform.SetParent(uiMarker.transform, false);
+        }
+
+        static FloatParameterUIMarker CreateFloatParameterUI(
+            FloatParameterUIMarker prefab,
+            Transform parent,
+            BuildData.FloatParameter inputFloatParameter,
+            int index,
+            BuildContentContext contentContext,
+            BuildLayoutContext layoutContext)
         {
             var marker = GameObject.Instantiate(prefab, parent, false);
             marker.nameText.text = inputFloatParameter.displayName;
             var parameterSync = marker.floatParameterSync;
             var serializedParameterSync = new SerializedObject(parameterSync);
-            serializedParameterSync.FindProperty("parameterHandler").objectReferenceValue = context.FloatParameterHandlers[index];
+            serializedParameterSync.FindProperty("parameterHandler").objectReferenceValue = contentContext.FloatParameterHandlers[index];
             serializedParameterSync.ApplyModifiedProperties();
-            context.MidiFloatInputs.Add(marker.midiFloatInput);
+            layoutContext.MidiFloatInputs.Add(marker.midiFloatInput);
             return marker;
         }
 
-        static IntParameterUIMarker CreateIntParameterUI(IntParameterUIMarker prefab, Transform parent,
-            BuildData.IntParameter inputIntParameter, int index, BuildContext context)
+        static IntParameterUIMarker CreateIntParameterUI(IntParameterUIMarker prefab,
+            Transform parent,
+            BuildData.IntParameter inputIntParameter,
+            int index,
+            BuildContentContext contentContext,
+            BuildLayoutContext layoutContext)
         {
             var marker = GameObject.Instantiate(prefab, parent, false);
             marker.nameText.text = inputIntParameter.displayName;
             var parameterSync = marker.intParameterSync;
             var serializedParameterSync = new SerializedObject(parameterSync);
-            serializedParameterSync.FindProperty("parameterHandler").objectReferenceValue = context.IntParameterHandlers[index];
+            serializedParameterSync.FindProperty("parameterHandler").objectReferenceValue = contentContext.IntParameterHandlers[index];
 
             var serializedParameterProviders = serializedParameterSync.FindProperty("parameterProviders");
             var serializedParameterViews = serializedParameterSync.FindProperty("parameterViews");
@@ -129,8 +171,7 @@ namespace Tauburn.RuntimeEditor.Animation
                 var serializedMidiInput = new SerializedObject(buttonMarker.midiIntInput);
                 serializedMidiInput.FindProperty("parameterValue").intValue = state.value;
                 serializedMidiInput.ApplyModifiedProperties();
-
-                context.MidiIntInputs.Add(buttonMarker.midiIntInput);
+                layoutContext.MidiIntInputs.Add(buttonMarker.midiIntInput);
             }
 
             serializedParameterSync.ApplyModifiedProperties();
@@ -145,11 +186,8 @@ namespace Tauburn.RuntimeEditor.Animation
             canvas.renderMode = RenderMode.WorldSpace;
 
             const float scale = 0.01f;
-            const float width = 200f;
-            const float height = 200f;
             var rect = canvas.GetComponent<RectTransform>();
             rect.localScale = new Vector3(scale, scale, scale);
-            rect.sizeDelta = new Vector2(width, height);
             rect.SetParent(parent, false);
 
             go.AddComponent<CanvasScaler>();

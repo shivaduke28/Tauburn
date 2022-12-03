@@ -16,7 +16,7 @@ namespace Tauburn.Midi
 
         FloatParameterHandler parameterHandler;
         bool isAssigning;
-        int midiNumber = -1;
+        public int MidiNumber { get; private set; } = -1;
 
 
         // VRCMidiListener
@@ -55,11 +55,11 @@ namespace Tauburn.Midi
         {
             if (isAssigning)
             {
-                midiNumber = number;
+                MidiNumber = number;
                 midiText.text = number.ToString();
                 isAssigning = false;
             }
-            else if (number == midiNumber)
+            else if (number == MidiNumber)
             {
                 parameterHandler.Set(value);
             }
@@ -71,11 +71,17 @@ namespace Tauburn.Midi
             isAssigning = true;
         }
 
+        public void ForceAssign(int number)
+        {
+            MidiNumber = number;
+            midiText.text = number == -1 ? "none" : number.ToString();
+            isAssigning = false;
+        }
 
         public void ResetAssignment()
         {
             midiText.text = "none";
-            midiNumber = -1;
+            MidiNumber = -1;
             isAssigning = false;
         }
     }

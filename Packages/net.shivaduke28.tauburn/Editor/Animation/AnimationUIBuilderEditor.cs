@@ -14,7 +14,7 @@ namespace Tauburn.Editor.Animation
             if (GUILayout.Button("Create Animation UI"))
             {
                 var uiBuilder = (AnimationUIBuilder) target;
-                UIBuilder.BuildAnimationUI(uiBuilder.animator, uiBuilder.uiMarkerPrefab, uiBuilder.buildData, uiBuilder.transform);
+                UIBuilder.BuildAnimationUI(uiBuilder.LayoutUIMarker, uiBuilder.AnimationBuildDatum, uiBuilder.transform);
             }
         }
     }
