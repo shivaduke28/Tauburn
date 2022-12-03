@@ -69,7 +69,6 @@ namespace Tauburn.Midi
         // called from AssignButton
         public void OnAssignButtonClick()
         {
-            Debug.Log("assign button click");
             isAssigning = true;
         }
 
