@@ -90,6 +90,7 @@ namespace Tauburn.Midi
             {
                 midiIntInputs[i].ForceAssign(numbers[i + offset]);
             }
+            isAssigning = true;
         }
 
         public void Reset()
@@ -102,6 +103,7 @@ namespace Tauburn.Midi
             {
                 input.ResetAssignment();
             }
+            isAssigning = true;
         }
     }
 }
