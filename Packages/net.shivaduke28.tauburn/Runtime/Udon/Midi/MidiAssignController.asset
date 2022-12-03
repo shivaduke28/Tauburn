@@ -50,19 +50,19 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: midiIntInputs
+      Data: midiFloatInputs
     - Name: $v
       Entry: 7
       Data: 2|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: midiIntInputs
+      Data: midiFloatInputs
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 3|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: Tauburn.Midi.MidiIntInput[], net.shivaduke28.tauburn
+      Data: Tauburn.Midi.MidiFloatInput[], net.shivaduke28.tauburn
     - Name: 
       Entry: 8
       Data: 
@@ -116,19 +116,19 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: midiFloatInputs
+      Data: midiIntInputs
     - Name: $v
       Entry: 7
       Data: 7|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: midiFloatInputs
+      Data: midiIntInputs
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 8|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: Tauburn.Midi.MidiFloatInput[], net.shivaduke28.tauburn
+      Data: Tauburn.Midi.MidiIntInput[], net.shivaduke28.tauburn
     - Name: 
       Entry: 8
       Data: 

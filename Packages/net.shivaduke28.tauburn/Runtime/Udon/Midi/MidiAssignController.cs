@@ -8,8 +8,8 @@ namespace Tauburn.Midi
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync), AddComponentMenu("Tauburn MidiAssignController")]
     public sealed class MidiAssignController : UdonSharpBehaviour
     {
-        [SerializeField] MidiIntInput[] midiIntInputs;
         [SerializeField] MidiFloatInput[] midiFloatInputs;
+        [SerializeField] MidiIntInput[] midiIntInputs;
         [SerializeField] InputField inputField;
         [SerializeField] GameObject menu;
 
@@ -19,11 +19,11 @@ namespace Tauburn.Midi
         public void ToggleAssign()
         {
             isAssigning = !isAssigning;
-            foreach (var input in midiIntInputs)
+            foreach (var input in midiFloatInputs)
             {
                 input.SetAssignActive(isAssigning);
             }
-            foreach (var input in midiFloatInputs)
+            foreach (var input in midiIntInputs)
             {
                 input.SetAssignActive(isAssigning);
             }
@@ -38,12 +38,12 @@ namespace Tauburn.Midi
         public void Save()
         {
             var result = "";
-            foreach (var input in midiIntInputs)
+            foreach (var input in midiFloatInputs)
             {
                 result += $"{input.MidiNumber},";
             }
 
-            foreach (var input in midiFloatInputs)
+            foreach (var input in midiIntInputs)
             {
                 result += $"{input.MidiNumber},";
             }
@@ -78,16 +78,17 @@ namespace Tauburn.Midi
                 }
             }
 
-            var intCount = midiIntInputs.Length;
-            for (var i = 0; i < intCount && i < length; i++)
+            var floatCount = midiFloatInputs.Length;
+            for (var i = 0; i < floatCount && i < length; i++)
             {
-                midiIntInputs[i].ForceAssign(numbers[i]);
+                midiFloatInputs[i].ForceAssign(numbers[i]);
             }
 
-            var floatCount = midiFloatInputs.Length;
-            for (var i = 0; i < floatCount && i + intCount < length; i++)
+            var offset = floatCount;
+            var intCount = midiIntInputs.Length;
+            for (var i = 0; i < intCount && i + offset < length; i++)
             {
-                midiFloatInputs[i].ForceAssign(numbers[i + intCount]);
+                midiIntInputs[i].ForceAssign(numbers[i + offset]);
             }
         }
 
