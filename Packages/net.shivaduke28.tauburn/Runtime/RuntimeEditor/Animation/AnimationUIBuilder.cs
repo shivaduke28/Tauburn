@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Tauburn.RuntimeEditor.Animation
 {
+    [AddComponentMenu("Tauburn AnimationUIBuilder")]
     public sealed class AnimationUIBuilder : MonoBehaviour
     {
         public Animator animator;
