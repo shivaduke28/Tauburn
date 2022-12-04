@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2883486816781431392}
   - component: {fileID: 2883486816781431395}
   m_Layer: 0
-  m_Name: Hooter
+  m_Name: Footer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1326,10 +1326,10 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 2883486818076678069}
+  midiFloatInputs:
+  - {fileID: 0}
   midiIntInputs:
   - {fileID: 0}
-  - {fileID: 0}
-  midiFloatInputs:
   - {fileID: 0}
   inputField: {fileID: 2883486818693849459}
   menu: {fileID: 2883486818226247574}
