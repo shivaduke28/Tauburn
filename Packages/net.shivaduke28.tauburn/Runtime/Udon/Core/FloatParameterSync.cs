@@ -7,9 +7,9 @@ namespace Tauburn.Core
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), AddComponentMenu("Tauburn FloatParameterSync"), DefaultExecutionOrder(-1)]
     public sealed class FloatParameterSync : FloatParameterHandler
     {
-        [SerializeField] FloatParameterHandler parameterHandler;
         [SerializeField] FloatParameterProvider[] parameterProviders;
         [SerializeField] FloatParameterView[] parameterViews;
+        FloatParameterHandler parameterHandler;
 
         [UdonSynced, FieldChangeCallback(nameof(SyncedValue))]
         float syncedValue;
@@ -34,6 +34,11 @@ namespace Tauburn.Core
             {
                 provider.Register(this);
             }
+        }
+
+        public void Register(FloatParameterHandler parameterHandler)
+        {
+            this.parameterHandler = parameterHandler;
         }
 
         public override void Set(float value)

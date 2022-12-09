@@ -1,4 +1,5 @@
-﻿using UdonSharp;
+﻿using Tauburn.Core;
+using UdonSharp;
 using UnityEngine;
 
 namespace Tauburn.Animation
@@ -8,18 +9,24 @@ namespace Tauburn.Animation
     {
         [SerializeField] Animator animator;
         [SerializeField] AnimationIntParameter[] intParameters;
+        [SerializeField] IntParameterSync[] intParameterSyncs;
         [SerializeField] AnimationFloatParameter[] floatParameters;
+        [SerializeField] FloatParameterSync[] floatParameterSyncs;
 
         void Start()
         {
-            foreach (var intParameter in intParameters)
+            for (var i = 0; i < floatParameters.Length; i++)
             {
-                intParameter.Initialize(animator);
+                var floatParameter = floatParameters[i];
+                floatParameter.Initialize(animator);
+                floatParameterSyncs[i].Register(floatParameter);
             }
 
-            foreach (var floatParameter in floatParameters)
+            for (var i = 0; i < intParameters.Length; i++)
             {
-                floatParameter.Initialize(animator);
+                var intParameter = intParameters[i];
+                intParameter.Initialize(animator);
+                intParameterSyncs[i].Register(intParameter);
             }
         }
     }
