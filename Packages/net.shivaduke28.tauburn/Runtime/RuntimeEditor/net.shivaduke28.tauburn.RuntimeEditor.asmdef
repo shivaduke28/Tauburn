@@ -1,0 +1,16 @@
+{
+    "name": "net.shivaduke28.tauburn.RuntimeEditor",
+    "references": [
+        "net.shivaduke28.tauburn",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

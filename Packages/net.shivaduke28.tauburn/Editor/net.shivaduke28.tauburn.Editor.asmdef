@@ -1,0 +1,22 @@
+{
+    "name": "net.shivaduke28.tauburn.Editor",
+    "references": [
+        "net.shivaduke28.tauburn",
+        "net.shivaduke28.tauburn.RuntimeEditor",
+        "UdonSharp.Runtime",
+        "UdonSharp.Editor",
+        "Unity.TextMeshPro",
+        "VRC.SDK3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
