@@ -7,9 +7,9 @@ namespace Tauburn.Core
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), AddComponentMenu("Tauburn IntParameterSync"), DefaultExecutionOrder(-1)]
     public sealed class IntParameterSync : IntParameterHandler
     {
-        [SerializeField] IntParameterHandler parameterHandler;
         [SerializeField] IntParameterProvider[] parameterProviders;
         [SerializeField] IntParameterView[] parameterViews;
+        IntParameterHandler parameterHandler;
 
         [UdonSynced, FieldChangeCallback(nameof(SyncedValue))]
         int syncedValue;
@@ -36,11 +36,24 @@ namespace Tauburn.Core
             }
         }
 
+        public void Register(IntParameterHandler parameterHandler)
+        {
+            this.parameterHandler = parameterHandler;
+        }
+
         public override void Set(int value)
         {
             Networking.SetOwner(Networking.LocalPlayer, gameObject);
             SyncedValue = value;
             RequestSerialization();
         }
+
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
+        public void CollectProvidersAndViewsInChildren()
+        {
+            parameterProviders = GetComponentsInChildren<IntParameterProvider>(true);
+            parameterViews = GetComponentsInChildren<IntParameterView>(true);
+        }
+#endif
     }
 }

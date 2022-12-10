@@ -4,6 +4,7 @@
         "net.shivaduke28.tauburn",
         "net.shivaduke28.tauburn.RuntimeEditor",
         "UdonSharp.Runtime",
+        "UdonSharp.Editor",
         "Unity.TextMeshPro",
         "VRC.SDK3"
     ],

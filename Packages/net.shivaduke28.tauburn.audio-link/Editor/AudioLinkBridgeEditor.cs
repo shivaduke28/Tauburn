@@ -20,8 +20,16 @@ namespace Tauburn.AudioLink.Editor
             if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(target, false, false)) return;
             base.OnInspectorGUI();
 
-            if (GUILayout.Button("Create AudioLink Sliders"))
+            if (GUILayout.Button("Create AudioLink Float Parameters"))
             {
+                var transform = audioLinkBridge.transform;
+                var root = transform.Find("FloatParameters");
+                if (root == null)
+                {
+                    root = new GameObject("FloatParameters").transform;
+                    root.SetParent(transform, false);
+                }
+
                 var serializedParams = serializedObject.FindProperty("audioLinkFloatParameters");
                 var values = Enum.GetValues(typeof(AudioLinkParameterType));
                 serializedParams.arraySize = values.Length;
@@ -33,7 +41,7 @@ namespace Tauburn.AudioLink.Editor
                     if (!(referencedObject is AudioLinkFloatParameter parameter))
                     {
                         var go = new GameObject(value.ToString());
-                        go.transform.SetParent(audioLinkBridge.transform);
+                        go.transform.SetParent(root);
                         parameter = go.AddComponent<AudioLinkFloatParameter>();
                     }
                     var serializedParameter = new SerializedObject(parameter);

@@ -1,53 +1,100 @@
 ﻿using Tauburn.Animation;
+using Tauburn.Editor.UI;
 using Tauburn.RuntimeEditor.Animation;
 using Tauburn.RuntimeEditor.UI;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Tauburn.Editor.Animation
 {
     public sealed class AnimatorBridgeBuilder
     {
-        readonly Animator animator;
-        readonly BuildData buildData;
-        GameObject gameObject;
-        SerializedObject serializedObject;
-
-        SerializedProperties serializedProperties;
-
         class SerializedProperties
         {
             public SerializedProperty Animator;
             public SerializedProperty FloatParameters;
-            public SerializedProperty INTParameters;
+            public SerializedProperty FloatParameterSyncs;
+            public SerializedProperty IntParameters;
+            public SerializedProperty IntParameterSyncs;
         }
 
-        public AnimatorBridgeBuilder(Animator animator, BuildData buildData)
+        public static void Build(AnimationBuildData[] buildDatas, LayoutUIMarker layoutUIMarkerPrefab)
         {
-            this.animator = animator;
-            this.buildData = buildData;
+            var canvas = UIBuilder.CreateCanvas(null);
+            var layoutContext = new UIBuilder.BuildLayoutContext();
+            var layout = GameObject.Instantiate(layoutUIMarkerPrefab, canvas.transform, false);
+
+            // Build AnimatorBridge and Content
+            foreach (var buildData in buildDatas)
+            {
+                CreateAnimatorBridge(buildData, layout, layoutContext);
+            }
+
+            // MIDI Assign
+            UIBuilder.SetupMidiAssignController(layout, layoutContext);
+
+            var canvasRect = canvas.GetComponent<RectTransform>();
+            var layoutRect = layout.GetComponent<RectTransform>();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(layoutRect);
+            canvasRect.sizeDelta = layoutRect.sizeDelta + new Vector2(50f, 20f);
+            canvasRect.position = new Vector3(0, 1, 0);
+            layoutRect.localPosition = -new Vector2(20f, 0f);
+            Selection.activeGameObject = canvas.gameObject;
         }
 
-        public AnimatorBridge CreateAnimatorBridge()
+        static AnimatorBridge CreateAnimatorBridge(AnimationBuildData animationBuildData, LayoutUIMarker layoutUIMarker,
+            UIBuilder.BuildLayoutContext layoutContext)
         {
-            gameObject = new GameObject(nameof(AnimatorBridge));
+            var animator = animationBuildData.Animator;
+            var buildData = animationBuildData.BuildData;
+
+            var context = new UIBuilder.BuildContentContext();
+
+            // まずAnimatorBridgeを作る
+            var gameObject = new GameObject(nameof(AnimatorBridge));
             var animatorBridge = gameObject.AddComponent<AnimatorBridge>();
 
-            serializedObject = new SerializedObject(animatorBridge);
-            serializedProperties = new SerializedProperties
+            var serializedObject = new SerializedObject(animatorBridge);
+            var serializedProperties = new SerializedProperties
             {
                 Animator = serializedObject.FindProperty("animator"),
                 FloatParameters = serializedObject.FindProperty("floatParameters"),
-                INTParameters = serializedObject.FindProperty("intParameters"),
+                IntParameters = serializedObject.FindProperty("intParameters"),
+                FloatParameterSyncs = serializedObject.FindProperty("floatParameterSyncs"),
+                IntParameterSyncs = serializedObject.FindProperty("intParameterSyncs"),
             };
 
             serializedProperties.Animator.objectReferenceValue = animator;
             serializedProperties.FloatParameters.arraySize = buildData.floatParameters.Length;
-            serializedProperties.INTParameters.arraySize = buildData.intParameters.Length;
+            serializedProperties.FloatParameterSyncs.arraySize = buildData.floatParameters.Length;
+            serializedProperties.IntParameters.arraySize = buildData.intParameters.Length;
+            serializedProperties.IntParameterSyncs.arraySize = buildData.intParameters.Length;
+
+            // Build UI Content
+            var content = UIBuilder.BuildContent(layoutUIMarker, buildData, layoutContext, context);
+
+            for (var i = 0; i < buildData.floatParameters.Length; i++)
+            {
+                var param = buildData.floatParameters[i];
+                serializedProperties.FloatParameters.GetArrayElementAtIndex(i).objectReferenceValue = AddFloatParameterHandler(param.name, gameObject);
+                serializedProperties.FloatParameterSyncs.GetArrayElementAtIndex(i).objectReferenceValue = context.FloatParameterSyncs[i];
+            }
+
+            for (var i = 0; i < buildData.intParameters.Length; i++)
+            {
+                var param = buildData.intParameters[i];
+                serializedProperties.IntParameters.GetArrayElementAtIndex(i).objectReferenceValue = AddIntParameterHandler(param.name, gameObject);
+                serializedProperties.IntParameterSyncs.GetArrayElementAtIndex(i).objectReferenceValue = context.IntParameterSyncs[i];
+            }
+
+            serializedObject.ApplyModifiedProperties();
+
+            gameObject.transform.SetParent(content.transform, false);
             return animatorBridge;
         }
 
-        public AnimationFloatParameter AddFloatParameterHandler(string parameterName, int index, UIBuilder.BuildContentContext buildContentContext)
+        static AnimationFloatParameter AddFloatParameterHandler(string parameterName, GameObject gameObject)
         {
             var go = new GameObject(parameterName);
             go.transform.SetParent(gameObject.transform, false);
@@ -55,13 +102,10 @@ namespace Tauburn.Editor.Animation
             var serialized = new SerializedObject(handler);
             serialized.FindProperty("parameterName").stringValue = parameterName;
             serialized.ApplyModifiedProperties();
-
-            serializedProperties.FloatParameters.GetArrayElementAtIndex(index).objectReferenceValue = handler;
-            buildContentContext.FloatParameterHandlers.Add(handler);
             return handler;
         }
 
-        public AnimationIntParameter AddIntParameterHandler(string parameterName, int index, UIBuilder.BuildContentContext buildContentContext)
+        static AnimationIntParameter AddIntParameterHandler(string parameterName, GameObject gameObject)
         {
             var go = new GameObject(parameterName);
             go.transform.SetParent(gameObject.transform, false);
@@ -70,14 +114,7 @@ namespace Tauburn.Editor.Animation
             serialized.FindProperty("parameterName").stringValue = parameterName;
             serialized.ApplyModifiedProperties();
 
-            serializedProperties.INTParameters.GetArrayElementAtIndex(index).objectReferenceValue = handler;
-            buildContentContext.IntParameterHandlers.Add(handler);
             return handler;
-        }
-
-        public void Apply()
-        {
-            serializedObject.ApplyModifiedProperties();
         }
     }
 }
