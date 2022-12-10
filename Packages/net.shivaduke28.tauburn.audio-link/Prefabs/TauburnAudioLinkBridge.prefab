@@ -1404,7 +1404,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Reset
+          m_StringArgument: ResetAssignment
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &7297937927496443953
@@ -10320,8 +10320,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8368635544485457194}
-  m_LocalRotation: {x: 0, y: -0.018084707, z: -0, w: 0.9998365}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalRotation: {x: 0, y: -0.018084709, z: 0, w: 0.9998365}
+  m_LocalPosition: {x: 0, y: 0.582, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8368635543765579220}

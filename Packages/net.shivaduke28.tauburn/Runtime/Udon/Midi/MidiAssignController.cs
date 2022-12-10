@@ -93,7 +93,7 @@ namespace Tauburn.Midi
             isAssigning = true;
         }
 
-        public void Reset()
+        public void ResetAssignment()
         {
             foreach (var input in midiIntInputs)
             {
