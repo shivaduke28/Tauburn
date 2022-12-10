@@ -47,5 +47,13 @@ namespace Tauburn.Core
             SyncedValue = value;
             RequestSerialization();
         }
+
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
+        public void CollectProvidersAndViewsInChildren()
+        {
+            parameterProviders = GetComponentsInChildren<IntParameterProvider>(true);
+            parameterViews = GetComponentsInChildren<IntParameterView>(true);
+        }
+#endif
     }
 }

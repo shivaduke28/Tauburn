@@ -84,7 +84,6 @@ namespace Tauburn.Midi
         // called from AssignButton
         public void OnAssignButtonClick()
         {
-            Debug.Log(state);
             SetState(state == MidiAssignState.Active ? MidiAssignState.Assigning : MidiAssignState.Active);
         }
 
